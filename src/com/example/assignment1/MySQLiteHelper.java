@@ -11,10 +11,12 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
   public static final String COLUMN_ID = "_id";
   public static final String COLUMN_COMMENT = "comment";
 
+  //name and version of the database
   private static final String DATABASE_NAME = "commments.db";
   private static final int DATABASE_VERSION = 1;
 
-  // Database creation sql statement
+  // Database creation sql statement sendt with execSQL in this.onCreate
+  // coloumns: int "id" that autoincrements and text "comments" that can't be empty
   private static final String DATABASE_CREATE = "create table "
       + TABLE_COMMENTS + "(" + COLUMN_ID
       + " integer primary key autoincrement, " + COLUMN_COMMENT

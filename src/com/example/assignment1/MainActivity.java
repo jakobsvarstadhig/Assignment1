@@ -22,12 +22,12 @@ public class MainActivity extends Activity {
 		return true;
 	}
 	public void goWeb(View view) {
-	    // Do something in response to button
+	    // Button starts or resumes WebActivity
 		Intent intent = new Intent(this, WebActivity.class);
 		startActivity(intent);
 	}
 	public void goData(View view) {
-	    // Do something in response to button
+	    // Button goes to DatabaseActivity
 		Intent intent = new Intent(this, DatabaseActivity.class);
 		startActivity(intent);
 	}

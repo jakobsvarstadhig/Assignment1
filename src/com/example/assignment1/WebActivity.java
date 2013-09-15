@@ -4,6 +4,7 @@ import java.io.InputStream;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.view.View;
@@ -15,7 +16,6 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.widget.Button;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 	public class WebActivity extends Activity {
@@ -32,21 +32,8 @@ import android.widget.TextView;
 	    
 	    textView = (TextView) findViewById(R.id.newnumberview);
 	    textViewTwo = (TextView) findViewById(R.id.oldnumberview);
-	    try{
-	    	SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-	    	preferences.getString("oldNum", oldNumber);
-	    	preferences.getString("newNum", newNumber);
-	    } catch (NullPointerException ex) { 
-	        System.out.println("no prefs found"); 
-	    }
-	    if(oldNumber != null){
-	    	textViewTwo.setText(oldNumber);
-	    }
-	    if(newNumber != null){
-	    	textView.setText(newNumber);
-	    }
-	    
-	    
+	
+	    //button that returns to main
 	    final Button button = (Button) findViewById(R.id.returnWebButton);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -54,6 +41,7 @@ import android.widget.TextView;
             	returnToMain();
             }
         });
+        //button that gets a number from random.org
         final Button button2 = (Button) findViewById(R.id.getWebButton);
         button2.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -68,15 +56,20 @@ import android.widget.TextView;
 	  }
 
 	  private class DownloadWebPageTask extends AsyncTask<String, Void, String> {
+		  ProgressDialog progressDialog;
 		  @Override
 		  protected void onPreExecute() {
-		   
-		   ProgressBar progress = (ProgressBar) findViewById(R.id.progressBar);
-		   progress.setVisibility(View.VISIBLE);
+		   // Before the processing task starts, show message
+
+			  progressDialog= ProgressDialog.show(WebActivity.this, "Working, please stand by","Getting a random number from random.org", true);
+
 		  }
 		  
 		  @Override
 	    protected String doInBackground(String... urls) {
+			  
+			  //the processing task itself
+			  
 	      String response = "";
 	      for (String url : urls) {
 	        DefaultHttpClient client = new DefaultHttpClient();
@@ -84,7 +77,7 @@ import android.widget.TextView;
 	        try {
 	          HttpResponse execute = client.execute(httpGet);
 	          InputStream content = execute.getEntity().getContent();
-
+	          //at the URL there is only one line but i am keeping the rest of the code for later
 	          BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
 	          String s = "";
 	          while ((s = buffer.readLine()) != null) {
@@ -100,10 +93,11 @@ import android.widget.TextView;
 
 	    @Override
 	    protected void onPostExecute(String result) {
-	      ProgressBar progress = (ProgressBar) findViewById(R.id.progressBar);
-	      progress.setVisibility(ProgressBar.GONE);
-	      oldNumber = newNumber;
-	      newNumber = result;
+	    	
+	    	// after the processing is completed, show the results
+	      progressDialog.dismiss();
+	      oldNumber = newNumber; //the old new number becomes the old number
+	      newNumber = result;  // the newNumber variable becomes the string of the webpages sourcecode 
 	      textView.setText(result);
 	      textViewTwo.setText(oldNumber);
 	
@@ -129,15 +123,14 @@ import android.widget.TextView;
 	    
 	    
 	    @Override
-	    protected void onPause() 
-	    {
+	    protected void onPause() {
 	      super.onPause();
 
 	      // Store values between instances here
 	      SharedPreferences preferences = getPreferences(MODE_PRIVATE);
 	      SharedPreferences.Editor editor = preferences.edit();  
-	      editor.putString("newNum",newNumber); // value to store
-	      editor.putString("oldNum",oldNumber); // value to store 
+	      editor.putString("newNum",newNumber); // newNumber stored as "newNum"
+	      editor.putString("oldNum",oldNumber); // oldNumber stored as "oldNum"
 	      // Commit to storage
 	      editor.commit();
 	    }
@@ -147,6 +140,7 @@ import android.widget.TextView;
 	    @Override
 	    protected void onResume() 
 	    {
+	    	//reload the two numbers on resume
 	    	super.onResume();
 	    	textView = (TextView) findViewById(R.id.newnumberview);
 	    	textViewTwo = (TextView) findViewById(R.id.oldnumberview);
@@ -157,6 +151,7 @@ import android.widget.TextView;
 	    	} catch (NullPointerException ex) { 
 	    		System.out.println("no prefs found"); 
 	    	}
+	    	//set the textviews to show the old saved values if they aren't still uninitialized
 	    	if(oldNumber != null){
 	    		textViewTwo.setText(oldNumber);
 	    	}

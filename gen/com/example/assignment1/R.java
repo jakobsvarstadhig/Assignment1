@@ -24,14 +24,13 @@ public final class R {
         public static final int ic_launcher=0x7f020000;
     }
     public static final class id {
-        public static final int action_settings=0x7f08000b;
+        public static final int action_settings=0x7f08000a;
         public static final int add=0x7f080001;
         public static final int button2=0x7f080003;
         public static final int delete=0x7f080002;
         public static final int getWebButton=0x7f080009;
         public static final int newnumberview=0x7f080008;
         public static final int oldnumberview=0x7f080006;
-        public static final int progressBar=0x7f08000a;
         public static final int returnWebButton=0x7f080004;
         public static final int return_database=0x7f080000;
         public static final int textViewWeb1=0x7f080005;

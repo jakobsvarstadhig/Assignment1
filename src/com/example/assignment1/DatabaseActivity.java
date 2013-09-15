@@ -31,27 +31,36 @@ public class DatabaseActivity  extends ListActivity  {
 	  }
 
 	  // Will be called via the onClick attribute
-	  // of the buttons in main.xml
+	  // of the buttons in main.xml only
 	  public void onClick(View view) {
 	    @SuppressWarnings("unchecked")
 	    ArrayAdapter<Comment> adapter = (ArrayAdapter<Comment>) getListAdapter();
 	    Comment comment = null;
+	    //switch - which button
 	    switch (view.getId()) {
+	    //add new comment button
 	    case R.id.add:
+	    	//new possible comments can be added here in this list.
+	    	//because comments.lenght is used in the random function this is the only change needed
 	      String[] comments = new String[] { "Go for it", "Run away", "Stay perfectly still", "It doesn't matter", "Rush into it!" };
 	      int nextInt = new Random().nextInt(comments.length);
 	      // Save the new comment to the database
 	      comment = datasource.createComment(comments[nextInt]);
+	      //add it to the visible list
 	      adapter.add(comment);
 	      break;
+	    //remove one comment button
 	    case R.id.delete:
 	      if (getListAdapter().getCount() > 0) {
 	        comment = (Comment) getListAdapter().getItem(0);
+	        //remove from database
 	        datasource.deleteComment(comment);
+	        //remove from list
 	        adapter.remove(comment);
 	      }
 	      break;
 	    }
+	    //update the visible list
 	    adapter.notifyDataSetChanged();
 	  }
 
@@ -68,7 +77,7 @@ public class DatabaseActivity  extends ListActivity  {
 	  }
  
 	public void returnToMain(View view) {
-	    // Do something in response to button
+	    // Return button to MainActivity
 		Intent intent = new Intent(this, MainActivity.class);
 		startActivity(intent);
 	}

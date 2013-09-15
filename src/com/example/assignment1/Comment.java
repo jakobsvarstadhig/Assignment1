@@ -1,5 +1,5 @@
 package com.example.assignment1;
-
+//database Item
 public class Comment {
 	  private long id;
 	  private String comment;
